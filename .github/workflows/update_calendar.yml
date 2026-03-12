@@ -1,0 +1,39 @@
+name: Auto Update Comprehensive Calendar
+
+on:
+  schedule:
+    # 每年 1 月 1 日的 00:00 (UTC 时间) 执行一次
+    - cron: '0 0 1 1 *'
+  workflow_dispatch: # 允许你在 GitHub 网页上手动点击运行（方便随时更新国务院最新的节假日调休）
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 必须赋予写入权限以提交新日历
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # 强制更新 lunar_python 以获取国务院每年底发布的最新调休安排
+        pip install --upgrade -r requirements.txt 
+
+    - name: Generate ICS File
+      run: python main.py
+
+    - name: Commit and Push Changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add chinese_calendar.ics
+        # 如果文件有变更，则提交并推送；如果没有变更则跳过，防止报错
+        git diff --quiet && git diff --staged --quiet || (git commit -m "📅 自动更新近五年日历及最新调休 [skip ci]" && git push)
