@@ -1,6 +1,7 @@
 import datetime
 import hashlib
-from lunar_python import Solar, HolidayUtil
+from lunar_python import Solar
+from lunar_python.util.HolidayUtil import HolidayUtil
 from icalendar import Calendar, Event
 
 def generate_comprehensive_ics():
