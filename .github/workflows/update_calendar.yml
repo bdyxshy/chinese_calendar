@@ -2,8 +2,8 @@ name: Auto Update Comprehensive Calendar
 
 on:
   schedule:
-    # 每年 1 月 1 日的 00:00 (UTC 时间) 执行一次
-    - cron: '0 0 1 1 *'
+    # 每月 1 日的 00:00 (UTC 时间) 执行一次
+    - cron: '0 0 1 * *'
   workflow_dispatch: # 允许你在 GitHub 网页上手动点击运行（方便随时更新国务院最新的节假日调休）
 
 jobs:
